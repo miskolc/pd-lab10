@@ -43,6 +43,7 @@ type expr =
   | While of expr * expr * locatie
   | For of expr * expr * expr * expr * locatie | Skip of locatie
   | Fun of string * tip * expr * locatie
+  | Let of string * tip * expr * expr * locatie
   | DeBruijnFun of expr * locatie
   | App of expr * expr * locatie
 
@@ -50,7 +51,7 @@ let exps = function
  | IntOfFloat _ | FloatOfInt _ | Bool _ | Int _ | Float _ 
  | Loc _ | Var _ |DeBruijnVar _ | Skip _ | Z _
    -> []
- | Atrib(_,e,_) | Fun(_,_,e,_) | DeBruijnFun (e,_)
+ | Atrib(_,e,_) | Fun(_,_,e,_) | DeBruijnFun (e,_) | Let(_,_,_,e,_)
    -> [e]
  | Op(e1,_,e2,_) | Secv(e1,e2,_) | While(e1,e2,_) | App(e1,e2,_)
    -> [e1;e2]
@@ -62,6 +63,7 @@ let exps = function
 let revExps = function
    | (e,[]) -> e
    | (Atrib(l,_,loc),[e]) -> Atrib(l,e,loc)
+   | (Let(x,t,_,_,loc),[e1,e2]) -> Let(x,t,e1,e2,loc)
    | (Fun(x,t,_,loc),[e]) -> Fun(x,t,e,loc) 
    | (DeBruijnFun(_,loc),[e]) -> DeBruijnFun(e,loc) 
    | (Op(_,op,_,loc),[e1;e2]) -> Op(e1,op,e2,loc) 
@@ -183,6 +185,8 @@ let string_of_expr e =
   | (Secv _,[s1;s2]) ->
     "(" ^ s1 ^ ";\n" ^ s2 ^ ")"
   | (Skip _, _) -> "()"
+  | (Let (x,t,_,_,_),[s1;s2]) ->
+    "(let " ^ x ^ " : " ^ string_of_tip t ^ " = " ^ s1 ^ " in\n" ^ s2 ^ "\n)"
   | (Fun (x,t,_,_),[s]) -> 
     "(fun (" ^ x ^ ":" ^ string_of_tip t ^ ") -> " ^ s ^ ")"
   | (DeBruijnFun (_,_),[s]) -> 
@@ -209,6 +213,7 @@ let location = function
   | For (_, _, _, _,l)
   | Secv (_,_,l)
   | Skip l 
+  | Let (_,_,_,_,l)
   | App (_,_,l)
   | Fun (_,_,_,l)
   | DeBruijnFun (_,l)
