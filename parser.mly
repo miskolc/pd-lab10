@@ -29,9 +29,12 @@ let parseError loc = raise (Lexer.ParseError loc)
 %token PLUS MINUS MUL DIV
 %token LPAREN RPAREN
 %token FUN COLON
+%token EQUAL
+%token LET IN
 %token TINT TBOOL TUNIT TFLOAT
 %token ARROW FUNX
 %token EOF
+%nonassoc LETX 
 %nonassoc FUNX /* lowest precedence */
 %right ARROW
 %right SEQ
@@ -75,6 +78,8 @@ expr:
                                { For ($3, $5, $7, $9, location()) }
   | FUN LPAREN VAR COLON tip RPAREN ARROW expr %prec FUNX
                                { Fun ($3, $5, $8, location()) }
+  | LET VAR COLON tip EQUAL expr IN expr %prec LETX
+                               { Let ($2, $4, $6, $8, location()) }                            
   | expr funexpr               { App ($1, $2, location()) }
   | funexpr                    { $1 }
   | error                      { parseError (location ()) }
