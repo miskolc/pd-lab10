@@ -73,6 +73,10 @@ let rec reduce = function
   | (App (e1, e2, loc), s) 
      -> (match reduce (e1,s) with Some (e1',s') -> Some (App(e1',e2,loc),s')
       | None -> None)
+  | (Let(x,tip,e1,e2,_),s) when is_val e1 -> Some (subst x e1 e2, s)   
+  | (Let(x,tip,e1,e2,loc), s)
+     -> (match reduce (e1,s) with Some (e1',s') -> Some (Let(x,tip,e1',e2,loc),s')
+      | None -> None)
 
 (*  Normal Order
   | (App (Fun(x,_,e1,_),e2,_),s) -> Some (subst x e2 e1, s)
