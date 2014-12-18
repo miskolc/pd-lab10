@@ -51,9 +51,9 @@ let exps = function
  | IntOfFloat _ | FloatOfInt _ | Bool _ | Int _ | Float _ 
  | Loc _ | Var _ |DeBruijnVar _ | Skip _ | Z _
    -> []
- | Atrib(_,e,_) | Fun(_,_,e,_) | DeBruijnFun (e,_) | Let(_,_,_,e,_)
+ | Atrib(_,e,_) | Fun(_,_,e,_) | DeBruijnFun (e,_) 
    -> [e]
- | Op(e1,_,e2,_) | Secv(e1,e2,_) | While(e1,e2,_) | App(e1,e2,_)
+ | Op(e1,_,e2,_) | Secv(e1,e2,_) | While(e1,e2,_) | App(e1,e2,_) | Let(_,_,e1,e2,_)
    -> [e1;e2]
  | If(e1,e2,e3,_)
    -> [e1;e2;e3]
@@ -63,7 +63,7 @@ let exps = function
 let revExps = function
    | (e,[]) -> e
    | (Atrib(l,_,loc),[e]) -> Atrib(l,e,loc)
-   | (Let(x,t,_,_,loc),[e1,e2]) -> Let(x,t,e1,e2,loc)
+   | (Let(x,t,_,_,loc),[e1;e2]) -> Let(x,t,e1,e2,loc)
    | (Fun(x,t,_,loc),[e]) -> Fun(x,t,e,loc) 
    | (DeBruijnFun(_,loc),[e]) -> DeBruijnFun(e,loc) 
    | (Op(_,op,_,loc),[e1;e2]) -> Op(e1,op,e2,loc) 
