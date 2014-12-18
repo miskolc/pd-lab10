@@ -72,6 +72,10 @@ let rec infertype m = function
   | FloatOfInt _ -> TArrow(TInt, TFloat)
   | Z _ -> TArrow(TArrow(TArrow(TInt,TInt),TArrow(TInt,TInt)),TArrow(TInt,TInt))
   | Fun (x,t,e,_) -> TArrow(t, infertype (update_or_add (x,Type t) m) e)
+  | Let (x,tip,e1,e2,_) 
+    -> (match (infertype m e1, infertype m e2) with
+     | (t1, t2) when t1 = tip -> t2
+     | (t1, t2) -> raise (TypeError (e1, tip, t1))) 
 
 
 let type_check m e = try
