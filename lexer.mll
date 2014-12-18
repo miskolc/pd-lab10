@@ -31,6 +31,7 @@ let keyword_table = Hashtbl.create 20
   [
    ( "fun"          , FUN );
    ( "let")         , LET );
+   ( "in" )         , IN );
    ( "int"          , TINT );
    ( "bool"         , TBOOL );
    ( "float"        , TFLOAT );
@@ -69,6 +70,7 @@ rule token = parse
   | '('            { LPAREN }
   | ')'            { RPAREN }
   | ":="           { ASGNOP }
+  | "="            { EQUAL }
   | ":"            { COLON }
   | ';'            { SEQ }
  | '!'            { DEREF }
