@@ -30,6 +30,7 @@ let keyword_table = Hashtbl.create 20
     List.iter (fun (kwd, tok) -> Hashtbl.add keyword_table kwd tok)
   [
    ( "fun"          , FUN );
+   ( "let")         , LET );
    ( "int"          , TINT );
    ( "bool"         , TBOOL );
    ( "float"        , TFLOAT );
