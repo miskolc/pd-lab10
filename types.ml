@@ -76,6 +76,10 @@ let rec infertype m = function
     -> (match (infertype m e1, infertype (update_or_add (x,Type tip) m) e2) with
      | (t1, t2) when t1 = tip -> t2
      | (t1, t2) -> raise (TypeError (e1, tip, t1))) 
+  | LetRec(x,tip,e1,e2,_)
+    -> (match (infertype m e1, infertype (update_or_add (x,Type tip) m) e2) with
+     | (t1, t2) when t1 = tip -> t2
+     | (t1, t2) -> raise (TypeError (e1, tip, t1)))  
 
 
 let type_check m e = try
