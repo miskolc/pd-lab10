@@ -31,6 +31,7 @@ let keyword_table = Hashtbl.create 20
   [
    ( "fun"          , FUN );
    ( "let"          , LET );
+   ( "rec"          , REC );
    ( "in"           , IN );
    ( "int"          , TINT );
    ( "bool"         , TBOOL );
